@@ -29,7 +29,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-xl md:text-xl font-semibold text-zinc-400 mb-8"
             >
-              Full Stack Developer
+              Software Engineer
             </motion.h2>
 
             <motion.p
@@ -82,6 +82,8 @@ export function Hero() {
                     src="/1.jpeg"
                     alt="Abdul Samad"
                     fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 hover:scale-110"
                   />
                 </div>

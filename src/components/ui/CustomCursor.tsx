@@ -5,6 +5,7 @@ import { motion, useSpring, useMotionValue } from "framer-motion";
 
 export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
@@ -13,6 +14,11 @@ export function CustomCursor() {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -21,9 +27,9 @@ export function CustomCursor() {
 
     window.addEventListener("mousemove", moveCursor);
     return () => window.removeEventListener("mousemove", moveCursor);
-  }, [cursorX, cursorY, isVisible]);
+  }, [cursorX, cursorY, isVisible, isMounted]);
 
-  if (typeof window === "undefined") return null;
+  if (!isMounted) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] hidden md:block">

@@ -27,7 +27,7 @@ export function About() {
               Crafting <span className="text-blue-500 italic">solutions</span> through code.
             </h2>
             <p className="text-zinc-400 text-lg mb-8 leading-relaxed">
-              I am a **Full Stack Developer** with a passion for building 
+              I am a **Software Engineer** with a passion for building 
               end-to-end solutions. From designing intuitive user interfaces 
               to architecting robust server-side systems, I enjoy the challenge 
               of creating seamless digital products.

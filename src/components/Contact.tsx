@@ -1,10 +1,39 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Mail, Phone, MapPin, Code, X, Globe, Camera, ShieldCheck, Send } from "lucide-react";
 import { Container } from "./ui/Container";
-import { Mail, MessageSquare, Send, MapPin, Phone, Code, X, Globe, Camera } from "lucide-react";
 
 export function Contact() {
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("loading");
+
+    const formData = new FormData(e.currentTarget);
+    
+    try {
+      const response = await fetch("https://formspree.io/f/xpwzjpqg", {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        (e.target as HTMLFormElement).reset();
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      setStatus("error");
+    }
+  };
+
   return (
     <section id="contact" className="section-padding relative overflow-hidden bg-[#020617]">
       {/* Background Glows */}
@@ -38,7 +67,7 @@ export function Contact() {
                   </div>
                   <div>
                     <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-0.5">Email Me</p>
-                    <p className="text-[12px] font-medium text-white truncate max-w-[150px]">abdulsamadkhan...gmail.com</p>
+                    <p className="text-[12px] font-medium text-white truncate max-w-[150px]">abdulsamad...gmail.com</p>
                   </div>
                 </div>
               </motion.div>
@@ -102,39 +131,69 @@ export function Contact() {
             >
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
               
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Name</label>
-                    <input 
-                      type="text" 
-                      placeholder="Your name"
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 focus:border-blue-500/50 transition-all outline-none text-[12px] text-white placeholder:text-zinc-600"
-                    />
+              {status === "success" ? (
+                <div className="h-full flex flex-col items-center justify-center text-center py-12">
+                  <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 mb-6">
+                    <ShieldCheck size={32} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Message Sent!</h3>
+                  <p className="text-zinc-400 text-sm">Thank you for reaching out. I'll get back to you soon.</p>
+                  <button 
+                    onClick={() => setStatus("idle")}
+                    className="mt-8 text-blue-500 text-sm font-bold hover:underline"
+                  >
+                    Send another message
+                  </button>
+                </div>
+              ) : (
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Name</label>
+                      <input 
+                        name="name"
+                        type="text" 
+                        required
+                        placeholder="Your name"
+                        className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 focus:border-blue-500/50 transition-all outline-none text-[12px] text-white placeholder:text-zinc-600"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Email</label>
+                      <input 
+                        name="email"
+                        type="email" 
+                        required
+                        placeholder="your@email.com"
+                        className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 focus:border-blue-500/50 transition-all outline-none text-[12px] text-white placeholder:text-zinc-600"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Email</label>
-                    <input 
-                      type="email" 
-                      placeholder="your@email.com"
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 focus:border-blue-500/50 transition-all outline-none text-[12px] text-white placeholder:text-zinc-600"
+                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Message</label>
+                    <textarea 
+                      name="message"
+                      rows={4}
+                      required
+                      placeholder="Tell me about your project..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 focus:border-blue-500/50 transition-all outline-none resize-none text-[12px] text-white placeholder:text-zinc-600"
                     />
                   </div>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Message</label>
-                  <textarea 
-                    rows={4}
-                    placeholder="Tell me about your project..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 focus:border-blue-500/50 transition-all outline-none resize-none text-[12px] text-white placeholder:text-zinc-600"
-                  />
-                </div>
-                <button className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-[12px] font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 group relative overflow-hidden">
-                  <span className="relative z-10">Send Message</span>
-                  <Send size={14} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                </button>
-              </form>
+                  <button 
+                    disabled={status === "loading"}
+                    className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-[12px] font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="relative z-10">
+                      {status === "loading" ? "Sending..." : "Send Message"}
+                    </span>
+                    {status !== "loading" && <Send size={14} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                  </button>
+                  {status === "error" && (
+                    <p className="text-red-500 text-[11px] text-center mt-2">Something went wrong. Please try again.</p>
+                  )}
+                </form>
+              )}
             </motion.div>
           </div>
         </div>
